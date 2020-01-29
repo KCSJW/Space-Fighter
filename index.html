@@ -4,13 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Spaceship Shooter</title>
+    <title>Hit Airplane</title>
+
+        <style type="text/css">
+
+            html {
+                background-color: black;
+                overflow-y: scroll;
+            }
+            body {
+                margin: 0;
+            }
+            
+            #game-canvas {
+                border: solid lightsteelblue;
+                background-color: black;
+                background: url("image/bkgd_4.png");
+                background-size: cover;
+                -webkit-animation: animatedBackground 5s linear infinite;
+                background-repeat: repeat-x;
+            }
+            @-webkit-keyframes animatedBackground {
+                from {background-position: 500px 0;}
+                to { background-position: 0 0; }
+            }
+        </style>
+
 </head>
 <body>
-    <div class="body-main">
-        <h1>Hit Airplane by Javascript</h1>   
-        <canvas id='game-canvas' width="1024" height="768"></canvas> 
-        <script src='code/game.js' ></script>
-    </div>
+    <h1>Hit Airplane by</h1>   
+    <canvas id='game-canvas' width="800" height="600"></canvas> 
+    <script src='src/space_shooter.js' ></script>
 </body>
 </html>

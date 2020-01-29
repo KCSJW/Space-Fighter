@@ -19,7 +19,7 @@
   * Controls under the main canvas.
   * Points next to the controls.
   * Game start with a player input and ends with all life are used.
-  ![alt text](https://github.com/KCSJW/space_shooter/blob/master/code/image/wireframe.png)
+  ![alt text](https://github.com/KCSJW/space_shooter/blob/master/image/wireframe.png)
 
 # Timeline
   * Day 1 Init set up files and start game logic. 
