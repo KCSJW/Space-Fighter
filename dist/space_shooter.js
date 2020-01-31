@@ -22,13 +22,24 @@ getImage = function() {
     explosionImage.src = "../images/explosion1.png";
 };
 
+// Sounds
+// =============================================================================
+
+const FIRE_SOUND = new Audio('../sound/bullet/bullet.ogg');
+const EXPLOSION_SOUND = new Audio('../sound/explosion/explosion.mp3');
+
+playSound = function (sound) {
+    sound.pause();
+    sound.currentTime = 0;
+    sound.play().then(() => {}).catch(() => {});
+};
+
 //  Game + Player + Control
 // =============================================================================
 
 let hasListener = false;
+let gameover = false;
 let lives = 3;
-
-
 let downKeys = {
     up: false,
     down: false,
@@ -37,8 +48,8 @@ let downKeys = {
     fire: false
 }
 
-let gameover = false;
 Game = function(lives) {
+
     canvas = document.getElementById('game-canvas');
     crashed = false;
     ctx = canvas.getContext("2d");
@@ -52,6 +63,8 @@ Game = function(lives) {
     explosions = [];
     getImage();
 
+    // PLAYER
+    // =========================================================================
     PLAYER = {
         X: 50,
         Y: 280,
@@ -61,9 +74,9 @@ Game = function(lives) {
         LIFES: lives,
         BULLETS: [],
         EXPLOSIONS: [],
-        STARTTIME: Date.now(),
         DURATION: 200,
         timeLeft: 1000,
+        STARTTIME: Date.now(),
     
         update: function() {
             if(downKeys.up){
@@ -88,22 +101,24 @@ Game = function(lives) {
         draw: function() {ctx.drawImage(playerImage, PLAYER.X, PLAYER.Y, PLAYER.W, PLAYER.H)},
 
         fire: function(){
-                const timePassed = Date.now() - this.STARTTIME;
-                if (timePassed < this.timeLeft) {
-                    this.STARTTIME = Date.now();
-                    this.timeLeft = this.timeLeft - timePassed;
-                } else {
-                    this.STARTTIME = Date.now();
-                    this.timeLeft = this.DURATION;
-                    if (nextCounter - oldCounter >= 1) {
-                        let z = new PlayerBullet(this.X + (this.W) / 2, this.Y, 8);
-                        this.BULLETS.push(z);
-                        oldCounter = nextCounter;
-                    }
+            const timePassed = Date.now() - this.STARTTIME;
+            if (timePassed < this.timeLeft) {
+                this.STARTTIME = Date.now();
+                this.timeLeft = this.timeLeft - timePassed;
+            } else {
+                this.STARTTIME = Date.now();
+                this.timeLeft = this.DURATION;
+                if (nextCounter - oldCounter >= 1) {
+                    let z = new PlayerBullet(this.X + (this.W) / 2, this.Y, 8);
+                    this.BULLETS.push(z);
+                    playSound(FIRE_SOUND);
+                    oldCounter = nextCounter;
+                }
             };
         }
     };
 
+    // Control==================================================================
     function onkeydown(e) {
         if (!crashed){
             if (e.key == ' ' || e.key == 'Enter') { downKeys.fire = true };
@@ -181,7 +196,7 @@ function getExplosionPictionPos(time) {
     return [x, y];
 };
 
-// Lifea
+// Lifes
 // =============================================================================
 
 function showLife(n) {
@@ -190,6 +205,7 @@ function showLife(n) {
     }
 };
 
+//  TODO
 // function enemyBullet(X, Y, SPEED) {
 //     this.X = X;
 //     this.Y = Y;
@@ -233,7 +249,7 @@ enemy = function(X, Y, SPEED) {
     };
 };
 
-// Util
+// Draw
 // =============================================================================
 
 function draw() {
@@ -242,12 +258,14 @@ function draw() {
 
     PLAYER.draw();
     PLAYER.BULLETS.forEach(bullet => bullet.draw());
-    // PLAYER.LIFES.forEach(life => life.draw());
     showLife(PLAYER.LIFES);
 
     enemies.forEach(enemy => enemy.draw());
 
 };
+
+// Update
+// =============================================================================
 
 function update(){
 
@@ -262,6 +280,7 @@ function update(){
                 z.state = 'inactive';
                 let bomb = new Explosion(enemies[i].X, enemies[i].Y);
                 explosions.push(bomb);
+                playSound(EXPLOSION_SOUND);
                 enemies.splice(i, 1);
             }
         })
@@ -282,6 +301,7 @@ function update(){
         if (isCrash(PLAYER, enemy)) {
             let bomb = new Explosion(PLAYER.X - 25, PLAYER.Y - 25, 100);
             explosions.push(bomb);
+            playSound(EXPLOSION_SOUND);
             downKeys = {
                 up: false,
                 down: false,
@@ -301,7 +321,9 @@ function update(){
         }
     });
 
-    explosions.forEach(explosion => explosion.draw());
+    explosions.forEach(explosion => {
+        explosion.draw();
+    });
 
 };
 
@@ -343,7 +365,7 @@ function render() {
                 if (!gameover) {
                     start();
                 } else {
-                    alert("game is realy over")
+                    alert("Game is really over")
                     // render other views
                 }
             }, 1200);
@@ -354,7 +376,6 @@ function render() {
 
 function start(){
     endTime = null;
-    console.log(lives)
     Game(lives);
     render();
     downKeys = {

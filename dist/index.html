@@ -9,15 +9,18 @@
 </head>
 <body>
     <div class="body-main">
-        
+
         <canvas id='game-canvas' width="800" height="600"></canvas>
         
         <div class="info">
             <div class="score">
                 something here
+                <audio controls autoplay loop >
+                    <source src="../sound/game/game.ogg" type="audio/ogg" />
+                    <source src="../sound/game/game.mp3" type="audio/mpeg" />
+                </audio>
             </div>
             
-            <div id='sound' class='on' title='toggle music and fx' style="display:none;"></div>
 
             <div class="instructions">
                 Arrow or WSAD keys to move, spacebar or enter to shoot.
