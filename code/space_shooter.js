@@ -11,6 +11,7 @@ function getImage() {
     playerBulletImage = new Image();
     enemyBulletImage = new Image();
     explosionImage = new Image();
+    blockImage = new Image();
 
 	playerImage.src = "../images/player.png";
     enemy01Image.src = "../images/enemy01.png";
@@ -20,6 +21,8 @@ function getImage() {
     playerBulletImage.src = "../images/player_bullet.png";
     enemyBulletImage.src = "../images/enemy_bullet04.png";
     explosionImage.src = "../images/explosion1.png";
+    blockImage.src = "../images/block.png";
+
 };
 
 // Sounds
@@ -29,9 +32,14 @@ const FIRE_SOUND = new Audio('../sound/bullet/bullet.ogg');
 const EXPLOSION_SOUND = new Audio('../sound/explosion/explosion.mp3');
 
 function playSound(sound) {
-    sound.pause();
     sound.currentTime = 0;
     sound.play().then(() => {}).catch(() => {});
+};
+
+function playLowSound(sound) {
+    sound.volume = 0.2
+    sound.currentTime = 0;
+    sound.play().then(() => { }).catch(() => {});
 };
 
 // Score
@@ -49,13 +57,14 @@ let hasListener = false;
 let gameover = false;
 let lives = 3;
 let score = 0;
+
 let downKeys = {
     up: false,
     down: false,
     left: false,
     right: false,
     fire: false
-}
+};
 
 function Game(lives, score) {
 
@@ -70,6 +79,8 @@ function Game(lives, score) {
 
     enemies = [];
     explosions = [];
+    blocks = [];
+
     getImage();
 
     // PLAYER
@@ -153,7 +164,7 @@ function Game(lives, score) {
         document.addEventListener('keydown', onkeydown);
         document.addEventListener('keyup', onkeyup);
         hasListener = true;
-    }
+    };
 };
 
 // Bulltet
@@ -242,6 +253,31 @@ enemy = function(X, Y, SPEED) {
     };
 };
 
+// Blocks
+// =============================================================================
+
+block = function(X, Y, SPEED) {
+    this.X = X;
+    this.Y = Y;
+    this.W = 50;
+    this.H = 50;
+    this.SPEED = SPEED;
+    this.state = 'active';
+
+    this.draw = function () {
+        ctx.drawImage(blockImage, this.X, this.Y, this.W, this.H)
+    };
+
+    this.update = function () {
+        this.Y = this.Y + this.SPEED;
+        if (this.Y >= CVH - this.W || this.Y <= 0) { this.SPEED *= -1 };
+        this.X--;
+        if (this.X <= 0) {
+            this.state = 'inactive';
+        };
+    };
+};
+
 // Draw
 // =============================================================================
 
@@ -254,6 +290,7 @@ function draw() {
     showLife(PLAYER.LIFES);
 
     enemies.forEach(enemy => enemy.draw());
+    blocks.forEach(block => block.draw());
 
 };
 
@@ -273,15 +310,15 @@ function update(){
                 z.state = 'inactive';
                 let bomb = new Explosion(enemies[i].X, enemies[i].Y);
                 explosions.push(bomb);
-                playSound(EXPLOSION_SOUND);
+                playLowSound(EXPLOSION_SOUND);
                 scoreUpdate();
                 enemies.splice(i, 1);
             }
         })
     };
 
-    let num = Math.random();
-    if ( num < 0.05 ) {
+    let numOfEnemy = Math.random();
+    if (numOfEnemy < 0.025) {
         let x = Math.floor(Math.random() * (CVH - 50));
         let y = Math.floor(Math.random() * 600);
         let speed = Math.random() * 5;
@@ -291,9 +328,44 @@ function update(){
         enemies.push(a)
     };
 
-    enemies.forEach( enemy => {
+    enemies.forEach(enemy => {
         if (isCrash(PLAYER, enemy)) {
             let bomb = new Explosion(PLAYER.X - 25, PLAYER.Y - 25, 100);
+            explosions.push(bomb);
+            playSound(EXPLOSION_SOUND);
+            downKeys = {
+                up: false,
+                down: false,
+                left: false,
+                right: false,
+                fire: false
+            };
+            if (!crashed) {
+                PLAYER.LIFES--;
+                lives -= 1;
+                if (lives === 0) {
+                    lives = 3;
+                    gameover = true;
+                }
+            }
+            crashed = true;
+        }
+    });
+
+    blocks.forEach(block => block.update());
+
+    let numOfBlock = Math.random();
+    if (numOfBlock < 0.01) {
+        let x = Math.floor(Math.random() * (CVH - 50));
+        let y = Math.floor(Math.random() * 600);
+        let neg = Math.random();
+        let b = new block(800, y, 0)
+        blocks.push(b)
+    };
+
+    blocks.forEach(block => {
+        if (blockCrash(PLAYER, block)) {
+            let bomb = new Explosion(PLAYER.X - 30, PLAYER.Y - 30, 100);
             explosions.push(bomb);
             playSound(EXPLOSION_SOUND);
             downKeys = {
@@ -315,9 +387,7 @@ function update(){
         }
     });
 
-    explosions.forEach(explosion => {
-        explosion.draw();
-    });
+    explosions.forEach(explosion => {explosion.draw()});
 
 };
 
@@ -326,6 +396,10 @@ function update(){
 
 function isCrash(o1, o2) {
     return Math.sqrt(Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 20;
+};
+
+function blockCrash(o1, o2) {
+    return Math.sqrt(Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 50;
 };
 
 function isAHit(o1, o2) {
@@ -366,7 +440,6 @@ function render() {
         }
     }
 };
-
 
 function start(){
     endTime = null;
