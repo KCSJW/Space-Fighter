@@ -1,7 +1,7 @@
 // Image
 // =============================================================================
 
-getImage = function() {
+function getImage() {
 
     playerImage = new Image();
     enemy01Image = new Image();
@@ -28,10 +28,18 @@ getImage = function() {
 const FIRE_SOUND = new Audio('../sound/bullet/bullet.ogg');
 const EXPLOSION_SOUND = new Audio('../sound/explosion/explosion.mp3');
 
-playSound = function (sound) {
+function playSound(sound) {
     sound.pause();
     sound.currentTime = 0;
     sound.play().then(() => {}).catch(() => {});
+};
+
+// Score
+// =============================================================================
+
+function scoreUpdate() {
+    score += 10;
+    document.getElementById('score').innerText = '' + score;
 };
 
 //  Game + Player + Control
@@ -40,6 +48,7 @@ playSound = function (sound) {
 let hasListener = false;
 let gameover = false;
 let lives = 3;
+let score = 0;
 let downKeys = {
     up: false,
     down: false,
@@ -48,7 +57,7 @@ let downKeys = {
     fire: false
 }
 
-Game = function(lives) {
+function Game(lives, score) {
 
     canvas = document.getElementById('game-canvas');
     crashed = false;
@@ -65,12 +74,14 @@ Game = function(lives) {
 
     // PLAYER
     // =========================================================================
+
     PLAYER = {
         X: 50,
         Y: 280,
         W: 50,
         H: 50,
         SPEED: 4,
+        SCORE: score,
         LIFES: lives,
         BULLETS: [],
         EXPLOSIONS: [],
@@ -119,6 +130,7 @@ Game = function(lives) {
     };
 
     // Control==================================================================
+
     function onkeydown(e) {
         if (!crashed){
             if (e.key == ' ' || e.key == 'Enter') { downKeys.fire = true };
@@ -205,25 +217,6 @@ function showLife(n) {
     }
 };
 
-//  TODO
-// function enemyBullet(X, Y, SPEED) {
-//     this.X = X;
-//     this.Y = Y;
-//     this.W = 5;
-//     this.H = 15;
-//     this.SPEED = SPEED;
-//     this.state = 'active';
-
-//     this.draw = function () {
-//         ctx.drawImage(enemyBulletImage, this.X, this.Y, this.W, this.H)
-//     };
-
-//     this.update = function () {
-//         this.Y -= this.SPEED;
-//         if (this.Y <= 0 || this.X <= 0) { this.sate = 'inactive' };
-//     };
-// };
-
 // Enemies
 // =============================================================================
 
@@ -281,6 +274,7 @@ function update(){
                 let bomb = new Explosion(enemies[i].X, enemies[i].Y);
                 explosions.push(bomb);
                 playSound(EXPLOSION_SOUND);
+                scoreUpdate();
                 enemies.splice(i, 1);
             }
         })
@@ -376,7 +370,7 @@ function render() {
 
 function start(){
     endTime = null;
-    Game(lives);
+    Game(lives, score);
     render();
     downKeys = {
         up: false,

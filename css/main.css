@@ -32,7 +32,7 @@ body {
     to { background-position: 0 0; }
 }
 
-.info{
+.body-main .info{
     display: flex;
     flex-direction: row;
     align-self: center;
@@ -41,29 +41,16 @@ body {
 }
 
 .score{
-    width: 50%;
+    width: 30%;
     margin: 2%;
 }
 
 .instructions {
-    width: 50%;
+    width: 40%;
     margin: 2%;
 }
 
-#sound { 
-    width: 24px; 
-    height: 24px; 
-    background: url("../images/sound.png"); 
-    display: inline-block; 
-    cursor: pointer; 
-    position: absolute; 
-    left: -2.5em; 
-}
-
-#sound.on{ 
-    background-position: 0 0; 
-}
-
-#sound.off{ 
-    background-position: -24px 0; 
+.info audio {
+    width: 20%;
+    margin: 2%;
 }
