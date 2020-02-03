@@ -1,3 +1,4 @@
+// =============================================================================
 // Image
 // =============================================================================
 
@@ -12,6 +13,7 @@ function getImage() {
     enemyBulletImage = new Image();
     explosionImage = new Image();
     blockImage = new Image();
+    powerupImage = new Image();
 
 	playerImage.src = "../images/player.png";
     enemy01Image.src = "../images/enemy01.png";
@@ -22,14 +24,16 @@ function getImage() {
     enemyBulletImage.src = "../images/enemy_bullet04.png";
     explosionImage.src = "../images/explosion1.png";
     blockImage.src = "../images/block.png";
+    powerupImage.src = "../images/powerup.png"
 
 };
-
+// =============================================================================
 // Sounds
 // =============================================================================
 
 const FIRE_SOUND = new Audio('../sound/bullet/bullet.ogg');
 const EXPLOSION_SOUND = new Audio('../sound/explosion/explosion.mp3');
+let mute = false;
 
 function playSound(sound) {
     sound.currentTime = 0;
@@ -42,14 +46,19 @@ function playLowSound(sound) {
     sound.play().then(() => { }).catch(() => {});
 };
 
-// Score
-// =============================================================================
-
-function scoreUpdate() {
-    score += 10;
-    document.getElementById('score').innerText = '' + score;
+document.getElementById("music").onclick = function () {
+    if (mute === true) {
+        document.getElementById('bgm').play();
+        document.getElementById('speaker').src = '../images/play.png';
+        mute = false;
+    } else {
+        document.getElementById('bgm').pause();
+        document.getElementById('speaker').src = '../images/mute.png';
+        mute = true;
+    }
 };
 
+// =============================================================================
 //  Game + Player + Control
 // =============================================================================
 
@@ -57,6 +66,7 @@ let hasListener = false;
 let gameover = false;
 let lives = 3;
 let score = 0;
+let killcount = 0;
 
 let downKeys = {
     up: false,
@@ -66,7 +76,7 @@ let downKeys = {
     fire: false
 };
 
-function Game(lives, score) {
+function Game(lives, score, killcount) {
 
     canvas = document.getElementById('game-canvas');
     crashed = false;
@@ -77,23 +87,26 @@ function Game(lives, score) {
     oldCounter = 0;
     nextCounter = 0;
 
-    enemies = [];
+    enemies = []; // TODO add more types
     explosions = [];
     blocks = [];
+    powerups = []; // speed power up testing, TODO add more types
 
     getImage();
 
+    // =========================================================================
     // PLAYER
     // =========================================================================
 
     PLAYER = {
         X: 50,
         Y: 280,
-        W: 50,
-        H: 50,
+        W: 40,
+        H: 40,
         SPEED: 4,
         SCORE: score,
         LIFES: lives,
+        KILLCOUNT: killcount,
         BULLETS: [],
         EXPLOSIONS: [],
         DURATION: 200,
@@ -139,9 +152,9 @@ function Game(lives, score) {
             };
         }
     };
-
-    // Control==================================================================
-
+    // =========================================================================
+    // Control
+    // =========================================================================
     function onkeydown(e) {
         if (!crashed){
             if (e.key == ' ' || e.key == 'Enter') { downKeys.fire = true };
@@ -167,6 +180,7 @@ function Game(lives, score) {
     };
 };
 
+// =============================================================================
 // Bulltet
 // =============================================================================
 
@@ -190,6 +204,7 @@ PlayerBullet = function(X, Y, SPEED) {
     };
 };
 
+// =============================================================================
 // Explosion
 // =============================================================================
 
@@ -219,6 +234,7 @@ function getExplosionPictionPos(time) {
     return [x, y];
 };
 
+// =============================================================================
 // Lifes
 // =============================================================================
 
@@ -228,6 +244,7 @@ function showLife(n) {
     }
 };
 
+// =============================================================================
 // Enemies
 // =============================================================================
 
@@ -240,7 +257,7 @@ enemy = function(X, Y, SPEED) {
     this.state = 'active';
 
     this.draw = function() {
-        ctx.drawImage(enemy02Image, this.X, this.Y, this.W, this.H)
+        ctx.drawImage(enemy01Image, this.X, this.Y, this.W, this.H)
     };
 
     this.update = function () {
@@ -253,6 +270,7 @@ enemy = function(X, Y, SPEED) {
     };
 };
 
+// =============================================================================
 // Blocks
 // =============================================================================
 
@@ -278,6 +296,33 @@ block = function(X, Y, SPEED) {
     };
 };
 
+// =============================================================================
+// PowerUps
+// =============================================================================
+
+powerup = function (X, Y, SPEED) {
+    this.X = X;
+    this.Y = Y;
+    this.W = 20;
+    this.H = 20;
+    this.SPEED = SPEED;
+    this.state = 'active';
+
+    this.draw = function () {
+        ctx.drawImage(powerupImage, this.X, this.Y, this.W, this.H)
+    };
+
+    this.update = function () {
+        this.Y = this.Y + this.SPEED;
+        if (this.Y >= CVH - this.W || this.Y <= 0) { this.SPEED *= -1 };
+        this.X--;
+        if (this.X <= 0) {
+            this.state = 'inactive';
+        };
+    };
+};
+
+// =============================================================================
 // Draw
 // =============================================================================
 
@@ -291,13 +336,15 @@ function draw() {
 
     enemies.forEach(enemy => enemy.draw());
     blocks.forEach(block => block.draw());
+    powerups.forEach(powerup => powerup.draw());
 
 };
 
+// =============================================================================
 // Update
 // =============================================================================
 
-function update(){
+function update() {
 
     PLAYER.update();
     PLAYER.BULLETS.forEach(bullet => bullet.update());
@@ -305,25 +352,26 @@ function update(){
     enemies.forEach(enemy => enemy.update());
 
     for (let i = 0; i < enemies.length; i++) {
-        PLAYER.BULLETS.forEach(z => {
-            if (z.state === "active" && isAHit(z, enemies[i])) {
-                z.state = 'inactive';
+        PLAYER.BULLETS.forEach(bullet => {
+            if (bullet.state === "active" && isAHit(bullet, enemies[i])) {
+                bullet.state = 'inactive';
                 let bomb = new Explosion(enemies[i].X, enemies[i].Y);
                 explosions.push(bomb);
                 playLowSound(EXPLOSION_SOUND);
                 scoreUpdate();
+                killCountUpdate();
                 enemies.splice(i, 1);
             }
         })
     };
 
     let numOfEnemy = Math.random();
-    if (numOfEnemy < 0.025) {
+    if (numOfEnemy < 0.02) {
         let x = Math.floor(Math.random() * (CVH - 50));
         let y = Math.floor(Math.random() * 600);
         let speed = Math.random() * 5;
         let neg = Math.random();
-        if (neg < 0.5) { speed = -speed };
+        if (neg < 0.5) {speed = -speed};
         let a = new enemy(800, y, speed)
         enemies.push(a)
     };
@@ -355,12 +403,19 @@ function update(){
     blocks.forEach(block => block.update());
 
     let numOfBlock = Math.random();
-    if (numOfBlock < 0.01) {
+    if (numOfBlock < 0.008) {
         let x = Math.floor(Math.random() * (CVH - 50));
         let y = Math.floor(Math.random() * 600);
-        let neg = Math.random();
-        let b = new block(800, y, 0)
-        blocks.push(b)
+        let b = new block(800, y, 0);
+        blocks.push(b);
+    };
+
+    for (let i = 0; i < blocks.length; i++) {
+        PLAYER.BULLETS.forEach(bullet => {
+            if (bullet.state === "active" && blockHit(bullet, blocks[i])) {
+                bullet.state = 'inactive';
+            };
+        });
     };
 
     blocks.forEach(block => {
@@ -389,17 +444,33 @@ function update(){
 
     explosions.forEach(explosion => {explosion.draw()});
 
+    powerups.forEach(powerup => powerup.update());
+
+    let numOfPowerup = Math.random();
+    if (numOfPowerup < 0.001) {
+        let x = Math.floor(Math.random() * (CVH - 50));
+        let y = Math.floor(Math.random() * 600);
+        let neg = Math.random();
+        let p = new powerup(800, y, 0);
+        powerups.push(p);
+    };
+
+    for (let i = 0; i < powerups.length; i++) {
+        if (isCrash(PLAYER, powerups[i])) {
+            PLAYER.SPEED += 2;
+            powerups[i].state = 'inactive';
+            powerups.splice(i, 1);
+        };
+    };
+
 };
 
+// =============================================================================
 //  Math
 // =============================================================================
 
 function isCrash(o1, o2) {
     return Math.sqrt(Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 20;
-};
-
-function blockCrash(o1, o2) {
-    return Math.sqrt(Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 50;
 };
 
 function isAHit(o1, o2) {
@@ -409,6 +480,18 @@ function isAHit(o1, o2) {
     return false;
 };
 
+function blockCrash(o1, o2) {
+    return Math.sqrt(Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 50;
+};
+
+function blockHit(o1, o2) {
+    if (o1 && o2) {
+        return Math.sqrt(Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 30;
+    }
+    return false;
+};
+
+// =============================================================================
 //  Show
 // =============================================================================
 
@@ -433,17 +516,35 @@ function render() {
                 if (!gameover) {
                     start();
                 } else {
-                    alert("Game is really over")
-                    // render other views
+                    alert("Game over! Click ok to play again!")
+                    start();
                 }
             }, 1200);
         }
     }
 };
 
+// =============================================================================
+// Statistics
+// =============================================================================
+
+function scoreUpdate() {
+    score += 10;
+    document.getElementById('score').innerText = '' + score;
+};
+
+function killCountUpdate() {
+    killcount += 1;
+    document.getElementById('killcount').innerText = '' + killcount;
+};
+
+// =============================================================================
+// Init-game
+// =============================================================================
+
 function start(){
     endTime = null;
-    Game(lives, score);
+    Game(lives, score, killcount);
     render();
     downKeys = {
         up: false,
