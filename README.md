@@ -1,6 +1,6 @@
 # Hand Solo
   * This is a side scrolling mini game that have self-reload, a basic game loop, using canvas to render the game play.
-    
+  * [Live Game](https://kcsjw.github.io/hand_solo/dist/)
 
 # Functionality & MVP
   * Player interactive input control for moving around the canvas.
