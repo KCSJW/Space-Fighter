@@ -457,7 +457,7 @@ function update() {
 
     for (let i = 0; i < powerups.length; i++) {
         if (isCrash(PLAYER, powerups[i])) {
-            PLAYER.SPEED += 2;
+            PLAYER.SPEED += 1;
             powerups[i].state = 'inactive';
             powerups.splice(i, 1);
         };
