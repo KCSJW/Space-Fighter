@@ -69,3 +69,8 @@ body {
 .info #speaker {
     cursor: pointer; 
 }
+
+.links {
+    width: 20%;
+    margin: 2%;
+}
