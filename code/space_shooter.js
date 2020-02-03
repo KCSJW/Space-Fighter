@@ -358,7 +358,9 @@ function update() {
                 let bomb = new Explosion(enemies[i].X, enemies[i].Y);
                 explosions.push(bomb);
                 playLowSound(EXPLOSION_SOUND);
+                score += 10;
                 scoreUpdate();
+                killcount += 1;
                 killCountUpdate();
                 enemies.splice(i, 1);
             }
@@ -390,7 +392,9 @@ function update() {
             };
             if (!crashed) {
                 PLAYER.LIFES--;
+                score -= 100;
                 lives -= 1;
+                scoreUpdate();  
                 if (lives === 0) {
                     lives = 3;
                     gameover = true;
@@ -433,6 +437,8 @@ function update() {
             if (!crashed){
                 PLAYER.LIFES--;
                 lives -= 1;
+                score -= 100;
+                scoreUpdate();
                 if (lives === 0) {
                     lives = 3;
                     gameover = true;
@@ -458,6 +464,8 @@ function update() {
     for (let i = 0; i < powerups.length; i++) {
         if (isCrash(PLAYER, powerups[i])) {
             PLAYER.SPEED += 1;
+            score += 50;
+            scoreUpdate();
             powerups[i].state = 'inactive';
             powerups.splice(i, 1);
         };
@@ -517,6 +525,13 @@ function render() {
                     start();
                 } else {
                     alert("Game over! Click ok to play again!")
+                    hasListener = false;
+                    gameover = true;
+                    lives = 3;
+                    score = 0;
+                    scoreUpdate();
+                    killcount = 0;
+                    killCountUpdate();
                     start();
                 }
             }, 1200);
@@ -529,12 +544,10 @@ function render() {
 // =============================================================================
 
 function scoreUpdate() {
-    score += 10;
     document.getElementById('score').innerText = '' + score;
 };
 
 function killCountUpdate() {
-    killcount += 1;
     document.getElementById('killcount').innerText = '' + killcount;
 };
 
@@ -546,6 +559,8 @@ function start(){
     endTime = null;
     Game(lives, score, killcount);
     render();
+    scoreUpdate();
+    killCountUpdate();
     downKeys = {
         up: false,
         down: false,
