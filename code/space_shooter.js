@@ -33,7 +33,6 @@ function getImage() {
 
 const FIRE_SOUND = new Audio('../sound/bullet/bullet.ogg');
 const EXPLOSION_SOUND = new Audio('../sound/explosion/explosion.mp3');
-let mute = false;
 
 function playSound(sound) {
     sound.currentTime = 0;
@@ -46,6 +45,7 @@ function playLowSound(sound) {
     sound.play().then(() => { }).catch(() => {});
 };
 
+let mute = false;
 document.getElementById("music").onclick = function () {
     if (mute === true) {
         document.getElementById('bgm').play();
@@ -456,7 +456,6 @@ function update() {
     if (numOfPowerup < 0.001) {
         let x = Math.floor(Math.random() * (CVH - 50));
         let y = Math.floor(Math.random() * 600);
-        let neg = Math.random();
         let p = new powerup(800, y, 0);
         powerups.push(p);
     };
@@ -523,10 +522,10 @@ function render() {
                 timerId = null;
                 if (!gameover) {
                     start();
-                } else {
+                } else if (gameover){
                     alert("Game over! Click ok to play again!")
                     hasListener = false;
-                    gameover = true;
+                    gameover = false;
                     lives = 3;
                     score = 0;
                     scoreUpdate();
@@ -559,8 +558,6 @@ function start(){
     endTime = null;
     Game(lives, score, killcount);
     render();
-    scoreUpdate();
-    killCountUpdate();
     downKeys = {
         up: false,
         down: false,
