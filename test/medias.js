@@ -1,7 +1,8 @@
+// =============================================================================
 // Image
 // =============================================================================
 
-getImage = function() {
+function getImage() {
 
     playerImage = new Image();
     enemy01Image = new Image();
@@ -12,6 +13,7 @@ getImage = function() {
     enemyBulletImage = new Image();
     explosionImage = new Image();
     blockImage = new Image();
+    powerupImage = new Image();
 
     playerImage.src = "../images/player.png";
     enemy01Image.src = "../images/enemy01.png";
@@ -22,22 +24,36 @@ getImage = function() {
     enemyBulletImage.src = "../images/enemy_bullet04.png";
     explosionImage.src = "../images/explosion1.png";
     blockImage.src = "../images/block.png";
+    powerupImage.src = "../images/powerup.png"
 
 };
-
+// =============================================================================
 // Sounds
 // =============================================================================
 
 const FIRE_SOUND = new Audio('../sound/bullet/bullet.ogg');
 const EXPLOSION_SOUND = new Audio('../sound/explosion/explosion.mp3');
 
-playSound = function(sound) {
+function playSound(sound) {
     sound.currentTime = 0;
     sound.play().then(() => { }).catch(() => { });
 };
 
-playLowSound = function(sound) {
+function playLowSound(sound) {
     sound.volume = 0.2
     sound.currentTime = 0;
     sound.play().then(() => { }).catch(() => { });
+};
+
+let mute = false;
+document.getElementById("music").onclick = function () {
+    if (mute === true) {
+        document.getElementById('bgm').play();
+        document.getElementById('speaker').src = '../images/play.png';
+        mute = false;
+    } else {
+        document.getElementById('bgm').pause();
+        document.getElementById('speaker').src = '../images/mute.png';
+        mute = true;
+    }
 };

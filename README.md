@@ -1,6 +1,6 @@
 # Hand Solo
   * Solo this side scrolling mini game that have self-reload, a basic game loop, using canvas to render the game play with only one of your hand and become the next Han Solo!!.
-  * [Live Game](https://kcsjw.github.io/hand_solo/dist/)
+  * [Play Game](https://kcsjw.github.io/hand_solo/dist/)
 
 # Functionality & MVP
   * Player interactive input control for moving around the canvas.
@@ -22,8 +22,7 @@
   * Game start with a player input and ends with all life are used.
   ![alt text](https://github.com/KCSJW/hand_solo/blob/master/images/wireframe.png)
 
-# Timeline
-  * Day 1 Init set up files and start game logic. 
-  * Day 2 Enemies logic.
-  * Day 3 Bullet setting.
-  * Day 4 Mapping.
+# Attributions
+  * Sound effects are CC licensed from [freesound.org](https://freesound.org/).
+  * Backgound music is by [Rob Hubbard](https://en.wikipedia.org/wiki/Rob_Hubbard) on [HVSC](https://www.hvsc.de/).
+  * Graphics are CC licensed from [opengameart.org](https://opengameart.org/).
