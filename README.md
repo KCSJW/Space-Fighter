@@ -1,5 +1,5 @@
-# Hand Solo
-  * Solo this side scrolling mini game that have self-reload, a basic game loop, using canvas to render the game play with only one of your hand and become the next Han Solo!!.
+# Space Fighter
+  * Play this side scrolling mini game that have self-reload, a basic game loop, using canvas to render the game play with only one of your hand and become the next Han Solo!!.
   * [Play Game](https://kcsjw.github.io/hand_solo/dist/)
 
 # Functionality & MVP
