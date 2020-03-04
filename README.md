@@ -1,6 +1,6 @@
-# Space Fighter
+# [Space Fighter](https://kcsjw.github.io/Space-Fighter/dist/)
   * Play this side scrolling mini game that have self-reload, a basic game loop, using canvas to render the game play with only one of your hand and become the next Han Solo!!.
-  * [Play Game](https://kcsjw.github.io/Space-Fighter/dist/)
+  * [Play Live Game](https://kcsjw.github.io/Space-Fighter/dist/)
 
 # Functionality & MVP
   * Player interactive input control for moving around the canvas.
