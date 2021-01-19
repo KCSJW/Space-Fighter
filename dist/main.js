@@ -200,7 +200,7 @@ PlayerBullet = function(X, Y, SPEED) {
 
     this.update = function() { 
         this.X += this.SPEED;
-        if (this.X <= 0 ) { this.sate = 'inactive'};
+        if (this.X <= 0 ) { this.state = 'inactive'};
     };
 };
 
