@@ -530,10 +530,12 @@ function render() {
                     ctx.fillStyle = "red";
                     ctx.textAlign = "center";
                     ctx.font = "60px 'Shadows Into Light'";
-                    ctx.fillText("Game Over!", 400, 250);
+                    ctx.fillText("Game Over", 400, 250);
+
                     ctx.fillStyle = "white";
                     ctx.font = "30px 'Shadows Into Light'";
                     ctx.fillText("THANKS FOR PLAYING!", 400, 300);
+                    
                     ctx.fillStyle = "white";
                     ctx.font = "40px 'Impact'";
                     ctx.fillText("PRESS ENTER TO PLAY AGAIN!", 400, 520);
@@ -545,7 +547,7 @@ function render() {
                     scoreUpdate();
                     killcount = 0;
                     killCountUpdate();
-                    
+
                 }
             }, 1200);
         }
