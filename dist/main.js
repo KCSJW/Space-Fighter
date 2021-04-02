@@ -523,7 +523,21 @@ function render() {
                 if (!gameover) {
                     start();
                 } else if (gameover){
-                    alert("Game over! Click ok to play again!")
+
+                    let canvas = document.getElementById('game-canvas');
+                    let ctx = canvas.getContext("2d");
+                    
+                    ctx.fillStyle = "red";
+                    ctx.textAlign = "center";
+                    ctx.font = "60px 'Shadows Into Light'";
+                    ctx.fillText("Game Over!", 400, 250);
+                    ctx.fillStyle = "white";
+                    ctx.font = "30px 'Shadows Into Light'";
+                    ctx.fillText("THANKS FOR PLAYING!", 400, 300);
+                    ctx.fillStyle = "white";
+                    ctx.font = "40px 'Impact'";
+                    ctx.fillText("PRESS ENTER TO PLAY AGAIN!", 400, 520);
+
                     hasListener = false;
                     gameover = false;
                     lives = 3;
@@ -531,7 +545,6 @@ function render() {
                     scoreUpdate();
                     killcount = 0;
                     killCountUpdate();
-                    start();
                 }
             }, 1200);
         }
@@ -554,6 +567,33 @@ function killCountUpdate() {
 // Init-game
 // =============================================================================
 
+function menu() {
+    document.addEventListener("DOMContentLoaded", () => {
+        let canvas = document.getElementById('game-canvas');
+        let ctx = canvas.getContext("2d");
+
+        ctx.textAlign = "center";
+        ctx.font = "60px 'Arial'";
+        ctx.fillStyle = "white";
+        ctx.fillText("Welcome to Space Fighter!", 400, 150);
+        ctx.font = "20px 'Arial'";
+        ctx.fillText("Shoot enemies that are on your path!", 400, 220);
+        ctx.fillText("Try to pick up the yellow speed boost!", 400, 270);
+        ctx.fillText("Survive for as long as you can!", 400, 320);
+        ctx.fillText("Turn on the background music on the bottom left!", 400, 370);
+        ctx.font = "60px 'Impact'";
+        ctx.fillText("PRESS ENTER TO START", 400, 520);
+        ctx.textAlign = "left";
+
+        document.body.addEventListener("keydown", function (event) {
+            if (event.keyCode == 13) {
+                ctx.clearRect(0,0,800, 600);
+                new start();
+            };
+        });
+    });
+};
+
 function start(){
     endTime = null;
     Game(lives, score, killcount);
@@ -567,4 +607,4 @@ function start(){
     };
 };
 
-start();
+menu();
