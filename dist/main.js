@@ -545,6 +545,7 @@ function render() {
                     scoreUpdate();
                     killcount = 0;
                     killCountUpdate();
+                    
                 }
             }, 1200);
         }
@@ -573,22 +574,26 @@ function menu() {
         let ctx = canvas.getContext("2d");
 
         ctx.textAlign = "center";
-        ctx.font = "60px 'Arial'";
+        ctx.font = "60px 'Impact'";
         ctx.fillStyle = "white";
         ctx.fillText("Welcome to Space Fighter!", 400, 150);
         ctx.font = "20px 'Arial'";
-        ctx.fillText("Shoot enemies that are on your path!", 400, 220);
-        ctx.fillText("Try to pick up the yellow speed boost!", 400, 270);
-        ctx.fillText("Survive for as long as you can!", 400, 320);
-        ctx.fillText("Turn on the background music on the bottom left!", 400, 370);
+        ctx.fillStyle = "lightsteelblue";
+        ctx.fillText("Shoot enemies and avoid blocks on your path!", 400, 250);
+        ctx.fillText("Try to pick up the yellow speed boost!", 400, 300);
+        ctx.fillText("Survive for as long as you can!", 400, 350);
         ctx.font = "60px 'Impact'";
+        ctx.fillStyle = "white";
         ctx.fillText("PRESS ENTER TO START", 400, 520);
+        ctx.font = "20px 'Arial'";
+        ctx.fillStyle = "yellow";
+        ctx.fillText("Turn on the background music on the bottom left!", 400, 580);
         ctx.textAlign = "left";
 
         document.body.addEventListener("keydown", function (event) {
             if (event.keyCode == 13) {
                 ctx.clearRect(0,0,800, 600);
-                new start();
+                start();
             };
         });
     });
