@@ -157,7 +157,7 @@ function Game(lives, score, killcount) {
     // =========================================================================
     function onkeydown(e) {
         if (!crashed){
-            if (e.key == ' ' || e.key == 'Enter') { downKeys.fire = true };
+            if (e.key == ' ') { downKeys.fire = true };
             if (e.key == 'w' || e.key == 'ArrowUp') { downKeys.up = true };
             if (e.key == 's' || e.key == 'ArrowDown') { downKeys.down = true };
             if (e.key == 'a' || e.key == 'ArrowLeft') { downKeys.left = true };
@@ -166,7 +166,7 @@ function Game(lives, score, killcount) {
     };
 
     function onkeyup(e){
-        if (e.key == ' ' || e.key == 'Enter') {downKeys.fire = false};
+        if (e.key == ' ') {downKeys.fire = false};
         if (e.key == 'w' || e.key == 'ArrowUp') {downKeys.up = false};
         if (e.key == 's' || e.key == 'ArrowDown') {downKeys.down = false};
         if (e.key == 'a' || e.key == 'ArrowLeft') {downKeys.left = false};
