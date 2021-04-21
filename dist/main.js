@@ -46,6 +46,7 @@ function playLowSound(sound) {
 };
 
 let mute = false;
+
 document.getElementById("music").onclick = function () {
     if (mute === true) {
         document.getElementById('bgm').play();
@@ -87,10 +88,10 @@ function Game(lives, score, killcount) {
     oldCounter = 0;
     nextCounter = 0;
 
-    enemies = []; // TODO add more types
+    enemies = []; 
     explosions = [];
     blocks = [];
-    powerups = []; // speed power up testing, TODO add more types
+    powerups = []; 
 
     getImage();
 
@@ -368,6 +369,7 @@ function update() {
     };
 
     let numOfEnemy = Math.random();
+
     if (numOfEnemy < 0.02) {
         let x = Math.floor(Math.random() * (CVH - 50));
         let y = Math.floor(Math.random() * 600);
@@ -477,24 +479,32 @@ function update() {
 // =============================================================================
 
 function isCrash(o1, o2) {
-    return Math.sqrt(Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 20;
+    return Math.sqrt(
+        Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + 
+        Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 20;
 };
 
 function isAHit(o1, o2) {
     if(o1 && o2){
-        return Math.sqrt(Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 20;
-    }
+        return Math.sqrt(
+            Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + 
+            Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 20;
+    };
     return false;
 };
 
 function blockCrash(o1, o2) {
-    return Math.sqrt(Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 50;
+    return Math.sqrt(
+        Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + 
+        Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 50;
 };
 
 function blockHit(o1, o2) {
     if (o1 && o2) {
-        return Math.sqrt(Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 30;
-    }
+        return Math.sqrt(
+            Math.pow((o1.X + o1.W / 2) - (o2.X + o2.W / 2), 2) + 
+            Math.pow((o1.Y + o1.H / 2) - (o2.Y + o2.H / 2), 2)) < 30;
+    };
     return false;
 };
 
@@ -507,9 +517,8 @@ let endTime = null;
 
 function render() {
 
-    if (endTime && Date.now() - endTime > 1000) {
-        return;
-    }
+    if (endTime && Date.now() - endTime > 1000) return;
+
     draw();
     update();
     nextCounter++;
@@ -548,10 +557,10 @@ function render() {
                     killcount = 0;
                     killCountUpdate();
 
-                }
+                };
             }, 1200);
-        }
-    }
+        };
+    };
 };
 
 // =============================================================================
